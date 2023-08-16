@@ -13,6 +13,11 @@ const postFields = groq`
 
 export const settingsQuery = groq`*[_type == "settings"][0]`
 
+export const aboutUsQuery = groq`*[_type == "about-us"][0]{
+  title,
+    description
+}`
+
 export const indexQuery = groq`
 *[_type == "post"] | order(date desc, _updatedAt desc) {
   ${postFields}

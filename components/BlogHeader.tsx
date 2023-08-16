@@ -21,7 +21,7 @@ export default function BlogHeader({
           </h1>
           <nav className="mt-4 md:mt-0 space-x-4">
             <Link className="text-gray-600 hover:text-gray-800" href="/about">About Us</Link>
-            <Link className="text-gray-600 hover:text-gray-800" href="/contact">Contact</Link>
+            {/* <Link className="text-gray-600 hover:text-gray-800" href="/contact">Contact</Link> */}
           </nav>
         </header>
       )

@@ -1,26 +1,31 @@
 /**
- * This plugin contains all the logic for setting up the `Settings` singleton
+ * This plugin contains all the logic for setting up the singletons
  */
 
-import { definePlugin, type DocumentDefinition } from 'sanity'
+import { type DocumentDefinition } from 'sanity'
 import { type StructureResolver } from 'sanity/desk'
+import { Iframe } from 'sanity-plugin-iframe-pane'
 
-export const settingsPlugin = definePlugin<{ type: string }>(({ type }) => {
+import { PREVIEWABLE_DOCUMENT_TYPES, iframeOptions } from '../sanity.config'
+
+export const singletonPlugin = (types: string[]) => {
   return {
-    name: 'settings',
+    name: 'singletonPlugin',
     document: {
-      // Hide 'Settings' from new document options
+      // Hide 'Singletons (such as Home)' from new document options
       // https://user-images.githubusercontent.com/81981/195728798-e0c6cf7e-d442-4e58-af3a-8cd99d7fcc28.png
       newDocumentOptions: (prev, { creationContext }) => {
         if (creationContext.type === 'global') {
-          return prev.filter((templateItem) => templateItem.templateId !== type)
+          return prev.filter(
+            (templateItem) => !types.includes(templateItem.templateId),
+          )
         }
 
         return prev
       },
-      // Removes the "duplicate" action on the "settings" singleton
+      // Removes the "duplicate" action on the Singletons (such as Home)
       actions: (prev, { schemaType }) => {
-        if (schemaType === type) {
+        if (types.includes(schemaType)) {
           return prev.filter(({ action }) => action !== 'duplicate')
         }
 
@@ -28,33 +33,49 @@ export const settingsPlugin = definePlugin<{ type: string }>(({ type }) => {
       },
     },
   }
-})
+}
 
-// The StructureResolver is how we're changing the DeskTool structure to linking to a single "Settings" document, instead of rendering "settings" in a list
-// like how "Post" and "Author" is handled.
-export const settingsStructure = (
-  typeDef: DocumentDefinition,
+// The StructureResolver is how we're changing the DeskTool structure to linking to document (named Singleton)
+// like how "Home" is handled.
+export const pageStructure = (
+  typeDefArray: DocumentDefinition[],
 ): StructureResolver => {
   return (S) => {
-    // The `Settings` root list item
-    const settingsListItem = // A singleton not using `documentListItem`, eg no built-in preview
-      S.listItem()
-        .title(typeDef.title)
+    // Goes through all of the singletons that were provided and translates them into something the
+    // Desktool can understand
+    const singletonItems = typeDefArray.map((typeDef) => {
+      return S.listItem()
+        .title(typeDef.title!)
         .icon(typeDef.icon)
         .child(
           S.editor()
             .id(typeDef.name)
             .schemaType(typeDef.name)
-            .documentId(typeDef.name),
+            .documentId(typeDef.name)
+            .views([
+              // Default form view
+              S.view.form(),
+              // Preview
+              ...(PREVIEWABLE_DOCUMENT_TYPES.includes(typeDef.name)
+                ? [
+                    S.view
+                      .component(Iframe)
+                      .options(iframeOptions)
+                      .title('Preview'),
+                  ]
+                : []),
+            ]),
         )
+    })
 
     // The default root list items (except custom ones)
     const defaultListItems = S.documentTypeListItems().filter(
-      (listItem) => listItem.getId() !== typeDef.name,
+      (listItem) =>
+        !typeDefArray.find((singleton) => singleton.name === listItem.getId()),
     )
 
     return S.list()
       .title('Content')
-      .items([settingsListItem, S.divider(), ...defaultListItems])
+      .items([...singletonItems, S.divider(), ...defaultListItems])
   }
 }

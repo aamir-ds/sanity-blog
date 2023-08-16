@@ -11,8 +11,8 @@ import {
   Iframe,
   type IframeOptions,
 } from 'sanity-plugin-iframe-pane'
-import authorType from 'schemas/author'
-import postType from 'schemas/post'
+import authorType from 'schemas/document/author'
+import postType from 'schemas/document/post'
 
 import AuthorAvatarPreviewPane from './AuthorAvatarPreviewPane'
 

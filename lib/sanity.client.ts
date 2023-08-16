@@ -7,6 +7,7 @@ import {
   postSlugsQuery,
   type Settings,
   settingsQuery,
+  aboutUsQuery,
 } from 'lib/sanity.queries'
 import { createClient, type SanityClient } from 'next-sanity'
 
@@ -36,6 +37,9 @@ export const getSanityImageConfig = () => getClient()
 
 export async function getSettings(client: SanityClient): Promise<Settings> {
   return (await client.fetch(settingsQuery)) || {}
+}
+export async function getAboutUs(client: SanityClient): Promise<Settings> {
+  return (await client.fetch(aboutUsQuery)) || {}
 }
 
 export async function getAllPosts(client: SanityClient): Promise<Post[]> {
