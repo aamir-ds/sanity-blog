@@ -4,8 +4,19 @@ import { readToken } from 'lib/sanity.api';
 import { getAboutUs, getClient } from 'lib/sanity.client';
 import { GetStaticProps } from 'next';
 import React from 'react';
+import { SharedPageProps } from './_app';
 
-const AboutUs: React.FC = (props) => {
+
+interface PageProps extends SharedPageProps {
+  data: [Page],
+
+}
+interface Page {
+  title: string,
+  description: string
+}
+
+const AboutUs: React.FC = (props: PageProps) => {
   const aboutData = props?.data[0]
   return (
     <>
