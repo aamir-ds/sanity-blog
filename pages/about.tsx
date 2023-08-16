@@ -17,7 +17,9 @@ interface Page {
 }
 
 const AboutUs: React.FC = (props: PageProps) => {
+  
   const aboutData = props?.data[0]
+  console.log(aboutData)
   return (
     <>
     <Container>
@@ -52,5 +54,6 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
       draftMode,
       token: draftMode ? readToken : '',
     },
+    revalidate: 10
   }
 }
