@@ -19,22 +19,24 @@ export default function BlogHeader({
           <h1 className="text-6xl font-bold leading-tight tracking-tighter md:pr-8 md:text-8xl">
             {title}
           </h1>
-          <h4
-            className={`mt-5 text-center text-lg md:pl-8 md:text-left ${styles.portableText}`}
-          >
-            <PortableText value={description} />
-          </h4>
+          <nav className="mt-4 md:mt-0 space-x-4">
+            <Link className="text-gray-600 hover:text-gray-800" href="/about">About Us</Link>
+            <Link className="text-gray-600 hover:text-gray-800" href="/contact">Contact</Link>
+          </nav>
         </header>
       )
-
     case 2:
       return (
-        <header>
+        <header className=" flex flex-col items-center md:flex-row md:justify-between">
           <h2 className="mb-20 mt-8 text-2xl font-bold leading-tight tracking-tight md:text-4xl md:tracking-tighter">
             <Link href="/" className="hover:underline">
               {title}
             </Link>
           </h2>
+          <nav className="mt-4 md:mt-0 space-x-4">
+            <Link className="text-gray-600 hover:text-gray-800" href="/about">About Us</Link>
+            <Link className="text-gray-600 hover:text-gray-800" href="/contact">Contact</Link>
+          </nav>
         </header>
       )
 
